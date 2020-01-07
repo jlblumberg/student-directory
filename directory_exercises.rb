@@ -10,7 +10,7 @@ def input_students
     cohort = gets.chomp.capitalize
     cohort = :defualt if cohort.empty?
     students << {name: name, cohort: cohort.to_s}
-    puts "Now we have #{students.count} students"
+    puts "Now we have #{students.count} " + ((students.length == 1) ? "student" : "students")
     puts "Next name please"
     name = gets.chomp.capitalize
   end
@@ -29,7 +29,7 @@ def print(students)
 end
 
 def print_footer(students)
-  puts "Overall, we have #{students.count} great students"
+  puts "Overall, we have #{students.count} great " + ((students.length == 1) ? "student" : "students")
 end
 
 students = input_students
