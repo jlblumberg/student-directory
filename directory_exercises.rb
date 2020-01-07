@@ -1,12 +1,18 @@
 def input_students
-  puts "Please enter the names of the students"
+  puts "Please enter the names and cohorts of the students"
   puts "To finish, just hit enter twice"
   students = []
-  name = gets.chomp
+  cohorts = []
+  puts "Enter the name"
+  name = gets.chomp.capitalize
   while !name.empty? do
-    students << {name: name, cohort: :november}
+    puts "And the cohort"
+    cohort = gets.chomp.capitalize
+    cohort = :defualt if cohort.empty?
+    students << {name: name, cohort: cohort.to_s}
     puts "Now we have #{students.count} students"
-    name = gets.chomp
+    puts "Next name please"
+    name = gets.chomp.capitalize
   end
   students
 end
