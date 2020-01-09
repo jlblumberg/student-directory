@@ -3,7 +3,7 @@
 def print_menu
   puts "1. Input the students"
   puts "2. Show the students"
-  puts "3. Save the list to students.csv"
+  puts "3. Save the list to a file"
   puts "4. Load the list from students.csv"
   puts "5. Clear the current students.csv"
   puts "9. Exit"
@@ -20,19 +20,28 @@ def process(selection)
   case selection
   when "1"
     input_students
+    puts "successfully input students"
   when "2"
     show_students
   when "3"
     save_students
+    puts "student(s) saved to students.csv"
   when "4"
     load_students
+    puts "students loaded"
   when "5"
     clear_file
+    puts "file cleared"
   when "9"
+    puts "exiting program"
     exit
   else
     puts "Not sure what you mean, try again"
   end
+end
+
+def add_name_to_students(a_name, a_cohort = :november)
+  @students << {name: a_name, cohort: a_cohort}
 end
 
 def input_students
@@ -40,7 +49,7 @@ def input_students
   puts "To finish, just hit enter twice"
   name = STDIN.gets.chomp
   while !name.empty? do
-    @students << {name: name, cohort: :november}
+    add_name_to_students(name)
     puts "Now we have #{@students.count} students"
     name = STDIN.gets.chomp
   end
@@ -68,35 +77,43 @@ def print_footer
 end
 
 def save_students
-  file = File.open("students.csv", "w")
-  @students.each do |student|
-    student_data = [student[:name], student[:cohort]]
-    csv_line = student_data.join(",")
-    file.puts csv_line
-  end
-  file.close
+  puts "Enter the file name where you want it saved"
+  filename = STDIN.gets.chomp
+  if File.exists?(filename) # if it exists
+    file = File.open(filename, "w") do |file|
+      @students.each do |student|
+        student_data = [student[:name], student[:cohort]]
+        csv_line = student_data.join(",")
+        file.puts csv_line
+      end
+    end
+  else # if it doesn't exist
+    puts "Sorry, #{filename} doesn't exist"
+    exit # quit the program
+  end # end if
 end
 
 def load_students(filename = "students.csv")
-  file = File.open(filename, "r")
-  file.readlines.each do |line|
-  name, cohort = line.chomp.split(',')
-    @students << {name: name, cohort: cohort.to_sym}
+  file = File.open(filename, "r") do |file|
+    file.readlines.each do |line|
+    name, cohort = line.chomp.split(',')
+      add_name_to_students(name, cohort)
+    end
   end
-  file.close
 end
 
 def clear_file(filename = "students.csv")
-  file = File.open(filename, "w")
-  file.truncate(0)
+  file = File.open(filename, "w") do |file|
+    file.truncate(0)
+  end
 end
 
 def try_load_students
   filename = ARGV.first # first argument from the command line
-  return if filename.nil? # exit method if filename wasn't given
+  filename = "students.csv" if filename.nil? # default to students
   if File.exists?(filename) # if it exists
     load_students(filename)
-    puts "Loaded #{@students.count} from #{filename}"
+    puts "Loaded #{@students.count} from #{filename}" if @students.count != 0
   else # if it doesn't exist
     puts "Sorry, #{filename} doesn't exist"
     exit # quit the program
