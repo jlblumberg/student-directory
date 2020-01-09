@@ -5,6 +5,7 @@ def print_menu
   puts "2. Show the students"
   puts "3. Save the list to students.csv"
   puts "4. Load the list from students.csv"
+  puts "5. Clear the current students.csv"
   puts "9. Exit"
 end
 
@@ -25,6 +26,8 @@ def process(selection)
     save_students
   when "4"
     load_students
+  when "5"
+    clear_file
   when "9"
     exit
   else
@@ -81,6 +84,11 @@ def load_students(filename = "students.csv")
     @students << {name: name, cohort: cohort.to_sym}
   end
   file.close
+end
+
+def clear_file(filename = "students.csv")
+  file = File.open(filename, "w")
+  file.truncate(0)
 end
 
 def try_load_students
